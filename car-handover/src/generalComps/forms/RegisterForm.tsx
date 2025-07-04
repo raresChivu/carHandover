@@ -1,4 +1,8 @@
 import { useRegisterFormState } from "./formStates/RegisterFormState";
+import {
+  isPasswordStrong,
+  getPasswordStrengthMessage,
+} from "../restrictions/PasswordRestrictions";
 
 export function RegisterForm() {
   const {
@@ -18,10 +22,24 @@ export function RegisterForm() {
     setIsAdmin,
   } = useRegisterFormState();
 
+  // Password strength message for live feedback
+  const passwordMessage = password ? getPasswordStrengthMessage(password) : "";
+
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
+        // Password strength validation
+        if (!isPasswordStrong(password)) {
+          setError(getPasswordStrengthMessage(password));
+          return;
+        }
+        // Confirm password match
+        if (password !== confirmPassword) {
+          setError("Passwords do not match.");
+          return;
+        }
+        setError("");
         // Handle registration logic here
         console.log({
           username,
@@ -68,6 +86,9 @@ export function RegisterForm() {
           required
           className="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline bg-white"
         />
+        {password && passwordMessage && (
+          <p className="text-red-600 text-xs italic mt-1">{passwordMessage}</p>
+        )}
       </div>
       <div className="mb-4">
         <label className="block text-black text-sm font-bold mb-2">
