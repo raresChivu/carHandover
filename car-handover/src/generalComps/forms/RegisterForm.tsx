@@ -1,8 +1,14 @@
 import { useRegisterFormState } from "./formStates/RegisterFormState";
+
 import {
   isPasswordStrong,
   getPasswordStrengthMessage,
 } from "../restrictions/PasswordRestrictions";
+import {
+  isEmailValid,
+  getEmailValidationMessage,
+  // isAllowedDomain // Uncomment if you want to restrict to specific domains
+} from "../restrictions/EmailRestrictions";
 
 export function RegisterForm() {
   const {
@@ -22,6 +28,8 @@ export function RegisterForm() {
     setIsAdmin,
   } = useRegisterFormState();
 
+  // Email validation message for live feedback
+  const emailMessage = email ? getEmailValidationMessage(email) : "";
   // Password strength message for live feedback
   const passwordMessage = password ? getPasswordStrengthMessage(password) : "";
 
@@ -29,6 +37,11 @@ export function RegisterForm() {
     <form
       onSubmit={(e) => {
         e.preventDefault();
+        // Email validation
+        if (!isEmailValid(email)) {
+          setError(getEmailValidationMessage(email));
+          return;
+        }
         // Password strength validation
         if (!isPasswordStrong(password)) {
           setError(getPasswordStrengthMessage(password));
@@ -74,6 +87,9 @@ export function RegisterForm() {
           required
           className="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline bg-white"
         />
+        {email && emailMessage && (
+          <p className="text-red-600 text-xs italic mt-1">{emailMessage}</p>
+        )}
       </div>
       <div className="mb-4">
         <label className="block text-black text-sm font-bold mb-2">

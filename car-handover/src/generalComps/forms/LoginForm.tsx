@@ -1,4 +1,8 @@
 import { useLoginFormState } from "./formStates/LoginFormState";
+import {
+  isEmailValid,
+  getEmailValidationMessage,
+} from "../restrictions/EmailRestrictions";
 
 export function LoginForm() {
   const {
@@ -12,8 +16,16 @@ export function LoginForm() {
     setError,
   } = useLoginFormState();
 
+  const emailMessage = email ? getEmailValidationMessage(email) : "";
+
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // Email validation
+    if (!isEmailValid(email)) {
+      setError(getEmailValidationMessage(email));
+      return;
+    }
+    setError("");
     // Handle login logic here
     console.log({ email, password, rememberMe });
   };
@@ -34,6 +46,9 @@ export function LoginForm() {
           required
           className="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline bg-white"
         />
+        {email && emailMessage && (
+          <p className="text-red-600 text-xs italic mt-1">{emailMessage}</p>
+        )}
       </div>
       <div className="mb-4">
         <label
