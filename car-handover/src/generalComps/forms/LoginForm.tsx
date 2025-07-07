@@ -4,7 +4,10 @@ import {
   getEmailValidationMessage,
 } from "../restrictions/EmailRestrictions";
 
+import { useRouter } from "next/router";
+
 export function LoginForm() {
+  const router = useRouter();
   const {
     email,
     setEmail,
@@ -28,6 +31,7 @@ export function LoginForm() {
     setError("");
     // Handle login logic here
     console.log({ email, password, rememberMe });
+    router.push("/screens/MainScreen"); // Redirect to home after login
   };
   return (
     <form onSubmit={onSubmit} className="w-full max-w-sm">
