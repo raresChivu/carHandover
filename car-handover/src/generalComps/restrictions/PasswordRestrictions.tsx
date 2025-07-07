@@ -1,8 +1,6 @@
-// Password strength requirements
 export const PASSWORD_MIN_LENGTH = 8;
 
 export function isPasswordStrong(password: string): boolean {
-  // At least 8 characters, one uppercase, one lowercase, one number, one special character
   const regex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
   return regex.test(password);
