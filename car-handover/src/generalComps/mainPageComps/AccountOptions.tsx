@@ -14,6 +14,14 @@ export default function AccountOptions() {
         router.push("/"); // Redirect to initial screen
       },
     },
+    {
+      label: "Sign Out",
+      action: () => {
+        localStorage.removeItem("rememberedUser");
+        localStorage.removeItem("currentUser");
+        router.push("/");
+      },
+    },
   ];
 
   return (

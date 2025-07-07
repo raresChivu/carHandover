@@ -1,3 +1,4 @@
+import React from "react";
 import { useLoginFormState } from "./formStates/LoginFormState";
 import {
   isEmailValid,
@@ -28,11 +29,39 @@ export function LoginForm() {
       setError(getEmailValidationMessage(email));
       return;
     }
-    setError("");
-    // Handle login logic here
-    console.log({ email, password, rememberMe });
-    router.push("/screens/MainScreen"); // Redirect to home after login
+    // Crosscheck with localStorage (array of users)
+    const usersRaw = localStorage.getItem("registeredUsers");
+    if (!usersRaw) {
+      setError("No registered users found. Please register first.");
+      return;
+    }
+    let users = [];
+    try {
+      users = JSON.parse(usersRaw);
+      if (!Array.isArray(users)) users = [];
+    } catch {
+      users = [];
+    }
+    const userData = users.find(
+      (u: any) => u.email === email && u.password === password,
+    );
+    if (userData) {
+      setError("");
+      // Remember Me logic
+      if (rememberMe) {
+        localStorage.setItem("rememberedUser", email);
+      } else {
+        localStorage.removeItem("rememberedUser");
+      }
+      // Save current user for session (simulate login)
+      localStorage.setItem("currentUser", JSON.stringify(userData));
+      router.push("/screens/MainScreen");
+    } else {
+      setError("Invalid email or password.");
+    }
   };
+  const [showPassword, setShowPassword] = React.useState(false);
+
   return (
     <form onSubmit={onSubmit} className="w-full max-w-sm">
       <div className="mb-4">
@@ -61,14 +90,24 @@ export function LoginForm() {
         >
           Password
         </label>
-        <input
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline bg-white"
-        />
+        <div className="relative">
+          <input
+            type={showPassword ? "text" : "password"}
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline bg-white pr-10"
+          />
+          <button
+            type="button"
+            className="absolute right-2 top-2 text-xs text-gray-600"
+            tabIndex={-1}
+            onClick={() => setShowPassword((v) => !v)}
+          >
+            {showPassword ? "Hide" : "Show"}
+          </button>
+        </div>
       </div>
       <div className="mb-4">
         <label className="inline-flex items-center">

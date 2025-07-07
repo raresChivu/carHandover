@@ -8,6 +8,7 @@ const navLinks = [
   { label: "Employees", path: "/Employees" },
   { label: "Reports", path: "/reports" },
   { label: "Settings", path: "/settings" },
+  { label: "PV", path: "/pv" },
 ];
 
 export default function NavBar() {
