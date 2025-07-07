@@ -1,20 +1,21 @@
 import React from "react";
-
-// You can customize these options as needed
-const accountOptions = [
-  { label: "Profile", action: () => {} },
-  { label: "Change Password", action: () => {} },
-  { label: "Notifications", action: () => {} },
-  { label: "Privacy Settings", action: () => {} },
-  {
-    label: "Logout",
-    action: () => {
-      /* Add logout logic here */
-    },
-  },
-];
+import { useRouter } from "next/router";
 
 export default function AccountOptions() {
+  const router = useRouter();
+  const accountOptions = [
+    { label: "Profile", action: () => {} },
+    { label: "Change Password", action: () => {} },
+    { label: "Notifications", action: () => {} },
+    { label: "Privacy Settings", action: () => {} },
+    {
+      label: "Logout",
+      action: () => {
+        router.push("/"); // Redirect to initial screen
+      },
+    },
+  ];
+
   return (
     <aside className="w-56 bg-white border-r border-gray-200 flex flex-col py-8 px-4 shadow-md">
       <div className="mb-10 text-xl font-bold text-center text-blue-700">
