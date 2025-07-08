@@ -1,6 +1,4 @@
-import { useState } from "react";
-
-export const [cars, setCars] = useState([
+export const cars = [
   {
     id: 1,
     plate: "B-123-ABC",
@@ -21,4 +19,4 @@ export const [cars, setCars] = useState([
     km: 32000,
     pvs: [],
   },
-]);
+];

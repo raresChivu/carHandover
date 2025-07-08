@@ -1,10 +1,19 @@
+import React from "react";
+import { useRouter } from "next/router";
 import { useRegisterFormState } from "./formStates/RegisterFormState";
+
 import {
   isPasswordStrong,
   getPasswordStrengthMessage,
 } from "../restrictions/PasswordRestrictions";
+import {
+  isEmailValid,
+  getEmailValidationMessage,
+  // isAllowedDomain // Uncomment if you want to restrict to specific domains
+} from "../restrictions/EmailRestrictions";
 
 export function RegisterForm() {
+  const router = useRouter();
   const {
     username,
     setUsername,
@@ -22,13 +31,23 @@ export function RegisterForm() {
     setIsAdmin,
   } = useRegisterFormState();
 
+  // Email validation message for live feedback
+  const emailMessage = email ? getEmailValidationMessage(email) : "";
   // Password strength message for live feedback
   const passwordMessage = password ? getPasswordStrengthMessage(password) : "";
+
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
 
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
+        // Email validation
+        if (!isEmailValid(email)) {
+          setError(getEmailValidationMessage(email));
+          return;
+        }
         // Password strength validation
         if (!isPasswordStrong(password)) {
           setError(getPasswordStrengthMessage(password));
@@ -40,14 +59,30 @@ export function RegisterForm() {
           return;
         }
         setError("");
-        // Handle registration logic here
-        console.log({
+        // Save registration data to localStorage (as array)
+        const userData = {
           username,
           email,
           password,
-          confirmPassword,
           isAdmin,
-        });
+        };
+        let users = [];
+        const existing = localStorage.getItem("registeredUsers");
+        if (existing) {
+          try {
+            users = JSON.parse(existing);
+            if (!Array.isArray(users)) users = [];
+          } catch {
+            users = [];
+          }
+        }
+        users.push(userData);
+        localStorage.setItem("registeredUsers", JSON.stringify(users));
+        setSuccessMessage("Registration successful! Data saved locally.");
+        // Redirect to login screen after a short delay
+        setTimeout(() => {
+          router.push("/screens/Login");
+        }, 1000);
       }}
       className="w-full max-w-md bg-white p-8 rounded-lg shadow-md"
     >
@@ -74,18 +109,31 @@ export function RegisterForm() {
           required
           className="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline bg-white"
         />
+        {email && emailMessage && (
+          <p className="text-red-600 text-xs italic mt-1">{emailMessage}</p>
+        )}
       </div>
       <div className="mb-4">
         <label className="block text-black text-sm font-bold mb-2">
           Password:
         </label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline bg-white"
-        />
+        <div className="relative">
+          <input
+            type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline bg-white pr-10"
+          />
+          <button
+            type="button"
+            className="absolute right-2 top-2 text-xs text-gray-600"
+            tabIndex={-1}
+            onClick={() => setShowPassword((v) => !v)}
+          >
+            {showPassword ? "Hide" : "Show"}
+          </button>
+        </div>
         {password && passwordMessage && (
           <p className="text-red-600 text-xs italic mt-1">{passwordMessage}</p>
         )}
@@ -94,13 +142,23 @@ export function RegisterForm() {
         <label className="block text-black text-sm font-bold mb-2">
           Confirm Password:
         </label>
-        <input
-          type="password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          required
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline bg-white"
-        />
+        <div className="relative">
+          <input
+            type={showConfirmPassword ? "text" : "password"}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline bg-white pr-10"
+          />
+          <button
+            type="button"
+            className="absolute right-2 top-2 text-xs text-gray-600"
+            tabIndex={-1}
+            onClick={() => setShowConfirmPassword((v) => !v)}
+          >
+            {showConfirmPassword ? "Hide" : "Show"}
+          </button>
+        </div>
       </div>
       <div className="mb-4 flex items-center">
         <label className="block text-black text-sm font-bold mr-2">
