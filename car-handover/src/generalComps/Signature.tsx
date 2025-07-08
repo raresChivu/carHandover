@@ -1,15 +1,17 @@
 import React, { useRef, useState } from "react";
 import { Check } from "lucide-react";
 
+
 import { useAppStates } from "./States";
-const canvasRef = useRef(null);
-
 import { useSignatureFunctions } from "./SignatureFunctions";
-const { startDrawing, draw, stopDrawing, saveSignature, clearCanvas } =
-  useSignatureFunctions();
 
-export default function Signature() {
+export default function Signature({ onSave }: { onSave?: () => void }) {
+  const { canvasRef, startDrawing, draw, stopDrawing, saveSignature, clearCanvas } = useSignatureFunctions();
   const { signatureType, setSignatureType } = useAppStates();
+  const handleSave = () => {
+    saveSignature();
+    if (onSave) onSave();
+  };
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-md">
@@ -32,7 +34,7 @@ export default function Signature() {
 
         <div className="flex gap-3">
           <button
-            onClick={saveSignature}
+            onClick={handleSave}
             className="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors"
           >
             <Check className="w-4 h-4 inline mr-2" />

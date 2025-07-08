@@ -1,6 +1,8 @@
 import { useState } from "react";
 
 export function useRegisterFormState() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -10,6 +12,10 @@ export function useRegisterFormState() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   return {
+    firstName,
+    setFirstName,
+    lastName,
+    setLastName,
     username,
     setUsername,
     email,

@@ -29,6 +29,10 @@ export function RegisterForm() {
     setSuccessMessage,
     isAdmin,
     setIsAdmin,
+    firstName,
+    setFirstName,
+    lastName,
+    setLastName,
   } = useRegisterFormState();
 
   // Email validation message for live feedback
@@ -65,6 +69,9 @@ export function RegisterForm() {
           email,
           password,
           isAdmin,
+          firstName,
+          lastName,
+          assignedCars: [], // New field for assigned cars
         };
         let users = [];
         const existing = localStorage.getItem("registeredUsers");
@@ -79,13 +86,35 @@ export function RegisterForm() {
         users.push(userData);
         localStorage.setItem("registeredUsers", JSON.stringify(users));
         setSuccessMessage("Registration successful! Data saved locally.");
-        // Redirect to login screen after a short delay
-        setTimeout(() => {
-          router.push("/screens/Login");
-        }, 1000);
+        // Redirect to login screen immediately
+        router.push("/screens/Login");
       }}
       className="w-full max-w-md bg-white p-8 rounded-lg shadow-md"
     >
+      <div className="mb-4">
+        <label className="block text-black text-sm font-bold mb-2">
+          First Name:
+        </label>
+        <input
+          type="text"
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+          required
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline bg-white"
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-black text-sm font-bold mb-2">
+          Last Name:
+        </label>
+        <input
+          type="text"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+          required
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline bg-white"
+        />
+      </div>
       <div className="mb-4">
         <label className="block text-black text-sm font-bold mb-2">
           Username:
