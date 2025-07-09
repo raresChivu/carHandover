@@ -1,12 +1,18 @@
-import React from "react";
+
+import React, { useState } from "react";
 import { useRouter } from "next/router";
+import NotificationsList from "../lists/NotificationsList";
 
 export default function AccountOptions() {
   const router = useRouter();
+  const [showNotifications, setShowNotifications] = useState(false);
   const accountOptions = [
     { label: "Profile", action: () => {} },
     { label: "Change Password", action: () => {} },
-    { label: "Notifications", action: () => {} },
+    {
+      label: "Notifications",
+      action: () => router.push("/screens/Notifications"),
+    },
     { label: "Privacy Settings", action: () => {} },
     {
       label: "Logout",
@@ -25,7 +31,7 @@ export default function AccountOptions() {
   ];
 
   return (
-    <aside className="w-56 bg-white border-r border-gray-200 flex flex-col py-8 px-4 shadow-md">
+    <aside className="w-56 bg-white border-r border-gray-200 flex flex-col py-8 px-4 shadow-md relative">
       <div className="mb-10 text-xl font-bold text-center text-blue-700">
         Account
       </div>
@@ -41,6 +47,7 @@ export default function AccountOptions() {
           </li>
         ))}
       </ul>
+      {/* Notifications panel removed; handled by router navigation */}
     </aside>
   );
 }

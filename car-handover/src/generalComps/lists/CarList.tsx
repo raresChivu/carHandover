@@ -34,7 +34,7 @@ export default function CarList() {
     if (isAdmin) {
       setIsRequestModal(false);
     } else {
-      setIsRequestModal(false); // show preview first for employees
+      setIsRequestModal(false); 
       setHasPreviewed(false);
     }
   };

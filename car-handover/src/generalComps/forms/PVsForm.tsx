@@ -100,6 +100,62 @@ export function PVSForm({ initialValues, onSavePV }: { initialValues?: Partial<R
               condition,
               photos,
             };
+
+            // --- Notification logic ---
+            if (typeof window !== 'undefined') {
+              const usersRaw = localStorage.getItem('registeredUsers');
+              if (usersRaw) {
+                let users = [];
+                try {
+                  users = JSON.parse(usersRaw);
+                } catch { users = []; }
+                // Notification for donor and recipient
+                const now = new Date().toISOString();
+                // Try to get car plate from users' assignedCars or from PV data
+                let carPlate = '';
+                // Try to get from PV data (if available)
+                if (initialValues && (initialValues as any).carPlate) {
+                  carPlate = (initialValues as any).carPlate;
+                }
+                // Fallback: try to get from a global cars array in localStorage (if available)
+                const carsRaw = localStorage.getItem('cars');
+                if (carsRaw) {
+                  try {
+                    const carsArr = JSON.parse(carsRaw);
+                    const carObj = Array.isArray(carsArr) ? carsArr.find((c: any) => c.id === carId) : null;
+                    if (carObj && carObj.plate) carPlate = carObj.plate;
+                  } catch {}
+                }
+                const notification = {
+                  id: Math.random().toString(36).slice(2),
+                  type: signatureType === 'donor' ? 'assign' : 'request',
+                  carId,
+                  carPlate,
+                  from: donorEmail,
+                  to: recipientEmail,
+                  message: signatureType === 'donor'
+                    ? `You have been assigned car ID ${carId} by ${donorEmail}`
+                    : `You have requested car ID ${carId} from ${donorEmail}`,
+                  date: now,
+                  read: false,
+                };
+                // Add notification to recipient and donor
+                users = users.map((u: any) => {
+                  if (u.email === notification.to || u.email === notification.from) {
+                    return {
+                      ...u,
+                      notifications: Array.isArray(u.notifications)
+                        ? [...u.notifications, notification]
+                        : [notification],
+                    };
+                  }
+                  return u;
+                });
+                localStorage.setItem('registeredUsers', JSON.stringify(users));
+              }
+            }
+            // --- End notification logic ---
+
             if (onSavePV) {
               onSavePV(pvData);
             } else {

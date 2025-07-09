@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-import { users, UserMock } from "../../mockery/usersMockery/UserMockData";
+import { UserMock } from "../../mockery/usersMockery/UserMockData";
 import Modal from "../../generalComps/Modal";
 import { PVSForm } from "../../generalComps/forms/PVsForm";
 import { cars } from "../../mockery/carMockery/CarMockData";
@@ -22,6 +22,28 @@ export default function Employees() {
     setAssignModalOpen(false);
     setSelectedEmployee(null);
   };
+  // Fetch users from localStorage, excluding currentUser
+  let users: UserMock[] = [];
+  let currentUserEmail = "";
+  if (typeof window !== 'undefined') {
+    const currentUserStr = localStorage.getItem('currentUser');
+    if (currentUserStr) {
+      try {
+        const currentUser = JSON.parse(currentUserStr);
+        currentUserEmail = currentUser.email;
+      } catch {}
+    }
+    const usersRaw = localStorage.getItem('registeredUsers');
+    if (usersRaw) {
+      try {
+        const allUsers = JSON.parse(usersRaw);
+        if (Array.isArray(allUsers)) {
+          users = allUsers.filter((u: any) => u.email !== currentUserEmail);
+        }
+      } catch {}
+    }
+  }
+
   return (
     <div className="w-full max-w-2xl mx-auto bg-white rounded-lg shadow p-6 mt-8">
       <div className="flex items-center justify-between mb-4">
