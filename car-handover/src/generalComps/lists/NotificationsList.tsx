@@ -4,7 +4,7 @@ import Modal from "../Modal";
 import { PVSForm } from "../forms/PVsForm";
 import Signature from "../Signature";
 
-const NotificationsList: React.FC = () => {
+function NotificationsList() {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [activeNotif, setActiveNotif] = useState<any | null>(null);
   const [showReview, setShowReview] = useState(false);
