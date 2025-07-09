@@ -3,11 +3,11 @@ import { useRouter } from "next/router";
 
 // You can customize these links as needed
 const navLinks = [
-  { label: "Dashboard", path: "/dashboard" },
+  { label: "Dashboard", path: "/screens/Dashboard" },
   { label: "Cars", path: "/screens/Cars" },
-  { label: "Orders", path: "/orders" },
-  { label: "Reports", path: "/reports" },
-  { label: "Settings", path: "/settings" },
+  { label: "Orders", path: "/screens/Orders" },
+  { label: "Reports", path: "/screens/Reports" },
+  { label: "Settings", path: "/screens/Settings" },
 ];
 
 export default function NavBar() {

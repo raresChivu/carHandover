@@ -7,13 +7,13 @@ export default function AccountOptions() {
   const router = useRouter();
   const [showNotifications, setShowNotifications] = useState(false);
   const accountOptions = [
-    { label: "Profile", action: () => {} },
-    { label: "Change Password", action: () => {} },
+    { label: "Profile", action: () => router.push("/screens/Profile") },
+    { label: "Change Password", action: () => router.push("/screens/ChangePassword") },
     {
       label: "Notifications",
       action: () => router.push("/screens/Notifications"),
     },
-    { label: "Privacy Settings", action: () => {} },
+    { label: "Privacy Settings", action: () => router.push("/screens/PrivacySettings") },
     {
       label: "Logout",
       action: () => {
