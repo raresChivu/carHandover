@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Signature from "../Signature";
 import { usePVsFormState } from "./formStates/PVsFormState";
 
-export function PVSForm({ initialValues }: { initialValues?: Partial<ReturnType<typeof usePVsFormState>> }) {
+export function PVSForm({ initialValues, onSavePV }: { initialValues?: Partial<ReturnType<typeof usePVsFormState>>, onSavePV?: (pvData: any) => void }) {
   const state = usePVsFormState();
   const {
     carId,
@@ -87,8 +87,7 @@ export function PVSForm({ initialValues }: { initialValues?: Partial<ReturnType<
       <div className="text-black flex flex-col items-center justify-center">
         <Signature
           onSave={() => {
-            // Log all PV data to the console
-            console.log({
+            const pvData = {
               carId,
               date,
               km,
@@ -100,8 +99,13 @@ export function PVSForm({ initialValues }: { initialValues?: Partial<ReturnType<
               fuelLevel,
               condition,
               photos,
-            });
-            alert("PV data logged in console.");
+            };
+            if (onSavePV) {
+              onSavePV(pvData);
+            } else {
+              console.log(pvData);
+              alert("PV data logged in console.");
+            }
           }}
         />
       </div>
