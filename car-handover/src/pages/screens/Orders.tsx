@@ -1,10 +1,10 @@
 import React from "react";
+import OrderList from "../../generalComps/lists/OrderList";
 
 export default function Orders() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
-      <h1 className="text-4xl font-bold text-blue-700 mb-4">Orders</h1>
-      <p className="text-lg text-gray-600">This is the Orders screen. Content coming soon.</p>
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-start pt-12">
+      <OrderList />
     </div>
   );
 }

@@ -124,6 +124,10 @@ export default function CarList() {
                 }}
                 onSavePV={(pvData) => {
                   console.log("Car request PV data:", pvData);
+                  // Notify order list to reload
+                  if (typeof window !== 'undefined') {
+                    window.dispatchEvent(new Event('orderListShouldReload'));
+                  }
                   closeModal();
                 }}
               />
