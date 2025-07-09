@@ -139,9 +139,12 @@ export function PVSForm({ initialValues, onSavePV }: { initialValues?: Partial<R
                   date: now,
                   read: false,
                 };
-                // Add notification to recipient and donor
+                // Add notification to recipient (assign) or donor (request) only
                 users = users.map((u: any) => {
-                  if (u.email === notification.to || u.email === notification.from) {
+                  if (
+                    (notification.type === 'assign' && u.email === notification.to) ||
+                    (notification.type === 'request' && u.email === notification.from)
+                  ) {
                     return {
                       ...u,
                       notifications: Array.isArray(u.notifications)
