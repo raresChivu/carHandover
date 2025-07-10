@@ -94,10 +94,14 @@ export function RegisterForm() {
       className="w-full max-w-md bg-white p-8 rounded-lg shadow-md"
     >
       <div className="mb-4">
-        <label className="block text-black text-sm font-bold mb-2">
+        <label
+          htmlFor="firstName"
+          className="block text-black text-sm font-bold mb-2"
+        >
           First Name:
         </label>
         <input
+          id="firstName"
           type="text"
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
@@ -106,10 +110,14 @@ export function RegisterForm() {
         />
       </div>
       <div className="mb-4">
-        <label className="block text-black text-sm font-bold mb-2">
+        <label
+          htmlFor="lastName"
+          className="block text-black text-sm font-bold mb-2"
+        >
           Last Name:
         </label>
         <input
+          id="lastName"
           type="text"
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
@@ -118,10 +126,14 @@ export function RegisterForm() {
         />
       </div>
       <div className="mb-4">
-        <label className="block text-black text-sm font-bold mb-2">
+        <label
+          htmlFor="username"
+          className="block text-black text-sm font-bold mb-2"
+        >
           Username:
         </label>
         <input
+          id="username"
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
@@ -130,10 +142,14 @@ export function RegisterForm() {
         />
       </div>
       <div className="mb-4">
-        <label className="block text-black text-sm font-bold mb-2">
+        <label
+          htmlFor="email"
+          className="block text-black text-sm font-bold mb-2"
+        >
           Email:
         </label>
         <input
+          id="email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -145,11 +161,15 @@ export function RegisterForm() {
         )}
       </div>
       <div className="mb-4">
-        <label className="block text-black text-sm font-bold mb-2">
+        <label
+          htmlFor="password"
+          className="block text-black text-sm font-bold mb-2"
+        >
           Password:
         </label>
         <div className="relative">
           <input
+            id="password"
             type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -170,11 +190,15 @@ export function RegisterForm() {
         )}
       </div>
       <div className="mb-4">
-        <label className="block text-black text-sm font-bold mb-2">
+        <label
+          htmlFor="confirmPassword"
+          className="block text-black text-sm font-bold mb-2"
+        >
           Confirm Password:
         </label>
         <div className="relative">
           <input
+            id="confirmPassword"
             type={showConfirmPassword ? "text" : "password"}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
@@ -192,10 +216,14 @@ export function RegisterForm() {
         </div>
       </div>
       <div className="mb-4 flex items-center">
-        <label className="block text-black text-sm font-bold mr-2">
+        <label
+          htmlFor="isAdmin"
+          className="block text-black text-sm font-bold mr-2"
+        >
           Admin:
         </label>
         <input
+          id="isAdmin"
           type="checkbox"
           checked={isAdmin}
           onChange={(e) => setIsAdmin(e.target.checked)}
