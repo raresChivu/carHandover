@@ -9,10 +9,13 @@ This is a full-featured React/Next.js frontend for a car handover management sys
 - **User Registration & Login:** Users can register (as admin or normal), login, and use "Remember Me" for persistent sessions. All authentication is currently localStorage-based.
 - **Role-based Navigation:** Admins and users see different navigation bars and options.
 - **Account Management:** Users can access profile, change password, notifications, privacy settings, logout, and sign out (which clears session data).
-- **Car List:** All users can view a styled list of cars, with details loaded from mock data.
+- **Car List:** All users can view a styled list of cars, with details loaded from mock data (or localStorage, initialized on first app load).
 - **Modal & Forms:** The app uses modal dialogs for forms and details, with reusable form components.
 - **Password/Email Restrictions:** Registration and login enforce password/email rules with live feedback.
 - **Helping Agent:** An AI-powered chat assistant helps users with app usage and features.
+- **Order Management:** Users can request/assign cars, and orders are stored per user. Orders are displayed in a compact table with all car/order details.
+- **Notifications:** Users receive notifications for car requests/assignments, with a notification counter in the UI.
+- **Email Order as PDF:** Users can send an order as a PDF attachment to the recipient/donor via email (uses backend API and Gmail SMTP/App Password).
 
 ## App Flow
 1. **Landing Page (`pages/index.tsx`):**
@@ -55,7 +58,9 @@ This is a full-featured React/Next.js frontend for a car handover management sys
 
 ## Data Flow & State
 - **Users:** Registered users are stored in localStorage as an array (`registeredUsers`). The currently logged-in user is stored as `currentUser`.
-- **Cars:** Car data is loaded from a static mock file, but can be replaced with backend API calls.
+- **Cars:** Car data is always loaded from localStorage (`cars`), initialized from mock data on first app load.
+- **Orders:** Each user has their own `orders` array in localStorage. Orders include car and user details, and can be sent as PDF via email.
+- **Notifications:** Each user has a `notifications` array in localStorage, and a notification counter is shown in the UI.
 - **Session:** "Remember Me" stores the user's email in localStorage as `rememberedUser`.
 - **Role Logic:** Admin/user distinction is based on the `isAdmin` property of the user object.
 
@@ -72,6 +77,40 @@ To connect this frontend to a backend:
 - All forms use React state and custom hooks for validation.
 - The app is styled for clarity and usability, with all text visible on white backgrounds.
 - The AI agent requires a valid Gemini API key; do not expose sensitive keys in production frontend code.
+
+
+## Email Notification Backend (Order as PDF)
+- The backend API (`/api/sendOrderEmail`) uses Nodemailer and Gmail SMTP to send order details as a PDF attachment.
+- PDF is generated on the fly using `pdfkit`.
+- Requires a Gmail App Password (not your real password) and 2-Step Verification enabled on the sender account.
+- If running locally, ensure your network/firewall allows outbound SMTP connections.
+- For production, consider using a transactional email API (SendGrid, Mailgun, etc) if SMTP is blocked.
+
+## Setup & Run
+
+**Install dependencies:**
+
+```sh
+npm install
+npm install nodemailer pdfkit
+```
+
+**Start the app:**
+
+```sh
+npm run dev
+```
+
+**Environment variables (recommended for production):**
+
+Set your Gmail credentials as environment variables and use them in `sendOrderEmail.ts`:
+
+```sh
+GMAIL_USER=your@email.com
+GMAIL_PASS=your-app-password
+```
+
+**Note:** Never commit real passwords or app passwords to your codebase.
 
 ## For Backend Developers
 - Review all localStorage usages and replace with secure backend endpoints.

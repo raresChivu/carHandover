@@ -31,20 +31,24 @@ export default async function handler(
   const doc = new PDFDocument();
   let pdfBuffer: Buffer | null = null;
   const chunks: Buffer[] = [];
-  doc.on('data', (chunk) => chunks.push(chunk));
-  doc.on('end', () => {
+  doc.on("data", (chunk) => chunks.push(chunk));
+  doc.on("end", () => {
     pdfBuffer = Buffer.concat(chunks);
   });
 
-  doc.fontSize(18).text('Car Order Details', { align: 'center' });
+  doc.fontSize(18).text("Car Order Details", { align: "center" });
   doc.moveDown();
   Object.entries(order).forEach(([key, value]) => {
-    doc.fontSize(12).text(`${key}: ${typeof value === 'object' ? JSON.stringify(value) : value}`);
+    doc
+      .fontSize(12)
+      .text(
+        `${key}: ${typeof value === "object" ? JSON.stringify(value) : value}`,
+      );
   });
   doc.end();
 
   // Wait for PDF to finish
-  await new Promise((resolve) => doc.on('end', resolve));
+  await new Promise((resolve) => doc.on("end", resolve));
 
   try {
     await transporter.sendMail({
