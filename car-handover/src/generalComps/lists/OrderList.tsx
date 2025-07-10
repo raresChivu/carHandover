@@ -59,6 +59,29 @@ export default function OrderList() {
     );
   }
 
+  // Helper to send order email
+  const sendOrderEmail = async (order: Order) => {
+    const toEmail = order.recipientEmail || order.donorEmail;
+    if (!toEmail) {
+      alert("No recipient email found for this order.");
+      return;
+    }
+    try {
+      const res = await fetch("/api/sendOrderEmail", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ order, toEmail }),
+      });
+      if (res.ok) {
+        alert("Order email sent successfully!");
+      } else {
+        alert("Failed to send order email.");
+      }
+    } catch (err) {
+      alert("Error sending order email.");
+    }
+  };
+
   return (
     <div className="w-full max-w-6xl mx-auto bg-white rounded-lg shadow p-6 mt-8 overflow-x-auto">
       <h2 className="text-2xl font-bold mb-4 text-blue-700">My Car Orders</h2>
@@ -82,6 +105,7 @@ export default function OrderList() {
             <th className="px-2 py-1 border text-black font-semibold">
               Description
             </th>
+            <th className="px-2 py-1 border text-black font-semibold">Send</th>
           </tr>
         </thead>
         <tbody>
@@ -115,6 +139,15 @@ export default function OrderList() {
               </td>
               <td className="px-2 py-1 border text-black truncate max-w-[200px]">
                 {order.description || "-"}
+              </td>
+              <td className="px-2 py-1 border text-black text-center">
+                <button
+                  className="bg-blue-500 hover:bg-blue-700 text-white text-xs font-bold py-1 px-2 rounded"
+                  onClick={() => sendOrderEmail(order)}
+                  title="Send order as email attachment"
+                >
+                  Send
+                </button>
               </td>
             </tr>
           ))}
