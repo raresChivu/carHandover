@@ -1,7 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
 
-// You can customize these links as needed
 const navLinks = [
   { label: "Dashboard", path: "/screens/Dashboard" },
   { label: "Cars", path: "/screens/Cars" },
