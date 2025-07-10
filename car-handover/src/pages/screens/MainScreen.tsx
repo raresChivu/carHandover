@@ -3,6 +3,7 @@ import AccountOptions from "../../generalComps/mainPageComps/AccountOptions";
 import HelpingAgent from "../../helpAgent/HelpingAgent";
 import AdminNavBar from "../../generalComps/mainPageComps/navbars/AdminNavBar";
 import UserNavBar from "../../generalComps/mainPageComps/navbars/UserNavBar";
+import Loading from "../../generalComps/Loading";
 
 function getIsAdminFromStorage(): boolean {
   // Try to get the current logged-in user from localStorage
@@ -20,10 +21,14 @@ function getIsAdminFromStorage(): boolean {
 
 export default function MainScreen() {
   const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setIsAdmin(getIsAdminFromStorage());
+    setTimeout(() => setLoading(false), 600); // Simulate loading
   }, []);
+
+  if (loading) return <Loading />;
 
   return (
     <div className="flex min-h-screen bg-gray-50">

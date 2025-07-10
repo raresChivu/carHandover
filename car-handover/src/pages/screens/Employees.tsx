@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Loading from "../../generalComps/Loading";
 import { useRouter } from "next/router";
 import { UserMock } from "../../mockery/usersMockery/UserMockData";
 import Modal from "../../generalComps/Modal";
@@ -7,12 +8,41 @@ import { cars } from "../../mockery/carMockery/CarMockData";
 
 export default function Employees() {
   const router = useRouter();
-
-  // Modal state for PV assignment
   const [assignModalOpen, setAssignModalOpen] = useState(false);
-  const [selectedEmployee, setSelectedEmployee] = useState<UserMock | null>(null);
+  const [selectedEmployee, setSelectedEmployee] = useState<UserMock | null>(
+    null,
+  );
+  const [users, setUsers] = useState<UserMock[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Handler for opening the modal
+  useEffect(() => {
+    setTimeout(() => setLoading(false), 600);
+    // Fetch users from localStorage, excluding currentUser
+    let usersArr: UserMock[] = [];
+    let currentUserEmail = "";
+    if (typeof window !== "undefined") {
+      const currentUserStr = localStorage.getItem("currentUser");
+      if (currentUserStr) {
+        try {
+          const currentUser = JSON.parse(currentUserStr);
+          currentUserEmail = currentUser.email;
+        } catch {}
+      }
+      const usersRaw = localStorage.getItem("registeredUsers");
+      if (usersRaw) {
+        try {
+          const allUsers = JSON.parse(usersRaw);
+          if (Array.isArray(allUsers)) {
+            usersArr = allUsers.filter(
+              (u: any) => u.email !== currentUserEmail,
+            );
+          }
+        } catch {}
+      }
+    }
+    setUsers(usersArr);
+  }, []);
+
   const handleAssignClick = (user: UserMock) => {
     setSelectedEmployee(user);
     setAssignModalOpen(true);
@@ -22,27 +52,8 @@ export default function Employees() {
     setAssignModalOpen(false);
     setSelectedEmployee(null);
   };
-  // Fetch users from localStorage, excluding currentUser
-  let users: UserMock[] = [];
-  let currentUserEmail = "";
-  if (typeof window !== 'undefined') {
-    const currentUserStr = localStorage.getItem('currentUser');
-    if (currentUserStr) {
-      try {
-        const currentUser = JSON.parse(currentUserStr);
-        currentUserEmail = currentUser.email;
-      } catch {}
-    }
-    const usersRaw = localStorage.getItem('registeredUsers');
-    if (usersRaw) {
-      try {
-        const allUsers = JSON.parse(usersRaw);
-        if (Array.isArray(allUsers)) {
-          users = allUsers.filter((u: any) => u.email !== currentUserEmail);
-        }
-      } catch {}
-    }
-  }
+
+  if (loading) return <Loading />;
 
   return (
     <div className="w-full max-w-2xl mx-auto bg-white rounded-lg shadow p-6 mt-8">
@@ -66,9 +77,9 @@ export default function Employees() {
               <span className="ml-2 text-gray-600">({user.email})</span>
             </div>
             <span
-              className={`inline-block mt-2 sm:mt-0 px-3 py-1 rounded-full text-xs font-medium ${user.isAdmin ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}
+              className={`inline-block mt-2 sm:mt-0 px-3 py-1 rounded-full text-xs font-medium ${user.isAdmin ? "bg-blue-100 text-blue-800" : "bg-green-100 text-green-800"}`}
             >
-              {user.isAdmin ? 'Admin' : 'Employee'}
+              {user.isAdmin ? "Admin" : "Employee"}
             </span>
             {/* Assign button, only for employees, only visible on hover */}
             {!user.isAdmin && (
@@ -84,13 +95,28 @@ export default function Employees() {
       </ul>
 
       {/* Modal for PV assignment */}
-      <Modal isOpen={assignModalOpen} onClose={handleCloseModal} title="Assign Car (PV Form)">
+      <Modal
+        isOpen={assignModalOpen}
+        onClose={handleCloseModal}
+        title="Assign Car (PV Form)"
+      >
         {selectedEmployee && (
           <PVSForm
             initialValues={{
-              donorEmail: (typeof window !== 'undefined' && localStorage.getItem('currentUser'))
-                ? (() => { try { return JSON.parse(localStorage.getItem('currentUser') || '').email || ""; } catch { return ""; } })()
-                : "",
+              donorEmail:
+                typeof window !== "undefined" &&
+                localStorage.getItem("currentUser")
+                  ? (() => {
+                      try {
+                        return (
+                          JSON.parse(localStorage.getItem("currentUser") || "")
+                            .email || ""
+                        );
+                      } catch {
+                        return "";
+                      }
+                    })()
+                  : "",
               recipientEmail: selectedEmployee.email,
               carId: typeof cars[0]?.id === "number" ? cars[0]?.id : undefined,
               date: new Date().toISOString().slice(0, 10),
