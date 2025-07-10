@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import nodemailer from "nodemailer";
+import PDFDocument from "pdfkit";
 
 export default async function handler(
   req: NextApiRequest,
@@ -21,20 +22,40 @@ export default async function handler(
       user: "rares.chivu@gmail.com",
       pass: "stqw aakh vfdf hqpm", // your App Password
     },
+    tls: {
+      rejectUnauthorized: false, // <--- add this line
+    },
   });
 
-  const orderJson = JSON.stringify(order, null, 2);
+  // Generate PDF from order JSON
+  const doc = new PDFDocument();
+  let pdfBuffer: Buffer | null = null;
+  const chunks: Buffer[] = [];
+  doc.on('data', (chunk) => chunks.push(chunk));
+  doc.on('end', () => {
+    pdfBuffer = Buffer.concat(chunks);
+  });
+
+  doc.fontSize(18).text('Car Order Details', { align: 'center' });
+  doc.moveDown();
+  Object.entries(order).forEach(([key, value]) => {
+    doc.fontSize(12).text(`${key}: ${typeof value === 'object' ? JSON.stringify(value) : value}`);
+  });
+  doc.end();
+
+  // Wait for PDF to finish
+  await new Promise((resolve) => doc.on('end', resolve));
 
   try {
     await transporter.sendMail({
       from: "Car Handover <rares.chivu@gmail.com>",
       to: toEmail,
       subject: "New Car Order Assignment",
-      text: "You have a new car order assignment. See the attached document for details.",
+      text: "You have a new car order assignment. See the attached PDF for details.",
       attachments: [
         {
-          filename: "order.json",
-          content: orderJson,
+          filename: "order.pdf",
+          content: pdfBuffer ?? Buffer.alloc(0),
         },
       ],
     });

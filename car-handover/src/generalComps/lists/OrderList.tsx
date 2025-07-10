@@ -61,16 +61,28 @@ export default function OrderList() {
 
   // Helper to send order email
   const sendOrderEmail = async (order: Order) => {
-    const toEmail = order.recipientEmail || order.donorEmail;
+    // Get current user from localStorage
+    let currentUserEmail = "";
+    if (typeof window !== "undefined") {
+      const userStr = localStorage.getItem("currentUser");
+      if (userStr) {
+        try {
+          const user = JSON.parse(userStr);
+          currentUserEmail = user.email;
+        } catch {}
+      }
+    }
+    // Send to the donor/owner/admin (not the current user)
+    const toEmail = order.donorEmail || "";
     if (!toEmail) {
-      alert("No recipient email found for this order.");
+      alert("No donor/owner email found for this order.");
       return;
     }
     try {
       const res = await fetch("/api/sendOrderEmail", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ order, toEmail }),
+        body: JSON.stringify({ order, toEmail, fromEmail: currentUserEmail }),
       });
       if (res.ok) {
         alert("Order email sent successfully!");
