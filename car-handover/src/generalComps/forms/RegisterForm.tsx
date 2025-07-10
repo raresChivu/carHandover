@@ -71,7 +71,9 @@ export function RegisterForm() {
           isAdmin,
           firstName,
           lastName,
-          assignedCars: [], // New field for assigned cars
+          assignedCars: [],
+          notifications: [],
+          orders: [], // New field for assigned cars
         };
         let users = [];
         const existing = localStorage.getItem("registeredUsers");

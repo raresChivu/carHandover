@@ -1,12 +1,19 @@
-
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-import { cars } from "../../mockery/carMockery/CarMockData";
+// import { cars } from "../../mockery/carMockery/CarMockData";
 import Modal from "../Modal";
 import { PVSForm } from "../forms/PVsForm";
 
-type Car = typeof cars[number];
-
+type Car = {
+  id: number;
+  plate: string;
+  model: string;
+  year: number;
+  owner: string;
+  status: string;
+  km: number;
+  pvs: any[];
+};
 
 export default function CarList() {
   const [selectedCar, setSelectedCar] = useState<Car | null>(null);
@@ -18,8 +25,8 @@ export default function CarList() {
   // Determine user type
   let currentUser = null;
   let isAdmin = false;
-  if (typeof window !== 'undefined') {
-    const userStr = localStorage.getItem('currentUser');
+  if (typeof window !== "undefined") {
+    const userStr = localStorage.getItem("currentUser");
     if (userStr) {
       try {
         currentUser = JSON.parse(userStr);
@@ -34,7 +41,7 @@ export default function CarList() {
     if (isAdmin) {
       setIsRequestModal(false);
     } else {
-      setIsRequestModal(false); 
+      setIsRequestModal(false);
       setHasPreviewed(false);
     }
   };
@@ -45,6 +52,28 @@ export default function CarList() {
     setIsRequestModal(false);
     setHasPreviewed(false);
   };
+
+  // Fetch cars from localStorage (fallback to mock if not found)
+  let cars: Car[] = [];
+  if (typeof window !== "undefined") {
+    const carsRaw = localStorage.getItem("cars");
+    if (carsRaw) {
+      try {
+        cars = JSON.parse(carsRaw);
+      } catch {
+        cars = [];
+      }
+    }
+  }
+
+  // If no cars in localStorage, fallback to mock data (imported)
+  if (!cars || !cars.length) {
+    try {
+      // Dynamically import mock data only if needed
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      cars = require("../../mockery/carMockery/CarMockData").cars;
+    } catch {}
+  }
 
   return (
     <div className="w-full max-w-3xl mx-auto bg-white rounded-lg shadow p-6 mt-8">
@@ -80,16 +109,28 @@ export default function CarList() {
       {isModalOpen && selectedCar && (
         <Modal isOpen={isModalOpen} onClose={closeModal}>
           {/* Admin: show details and assign, Employee: show preview first, then request */}
-          {(!isAdmin && !isRequestModal && !hasPreviewed) ? (
+          {!isAdmin && !isRequestModal && !hasPreviewed ? (
             <div className="p-4">
               <h3 className="text-xl font-bold mb-2 text-black">Car Details</h3>
               <ul className="text-black">
-                <li><strong>Plate:</strong> {selectedCar.plate}</li>
-                <li><strong>Model:</strong> {selectedCar.model}</li>
-                <li><strong>Year:</strong> {selectedCar.year}</li>
-                <li><strong>Owner:</strong> {selectedCar.owner}</li>
-                <li><strong>Status:</strong> {selectedCar.status}</li>
-                <li><strong>KM:</strong> {selectedCar.km}</li>
+                <li>
+                  <strong>Plate:</strong> {selectedCar.plate}
+                </li>
+                <li>
+                  <strong>Model:</strong> {selectedCar.model}
+                </li>
+                <li>
+                  <strong>Year:</strong> {selectedCar.year}
+                </li>
+                <li>
+                  <strong>Owner:</strong> {selectedCar.owner}
+                </li>
+                <li>
+                  <strong>Status:</strong> {selectedCar.status}
+                </li>
+                <li>
+                  <strong>KM:</strong> {selectedCar.km}
+                </li>
               </ul>
               <button
                 className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
@@ -125,8 +166,8 @@ export default function CarList() {
                 onSavePV={(pvData) => {
                   console.log("Car request PV data:", pvData);
                   // Notify order list to reload
-                  if (typeof window !== 'undefined') {
-                    window.dispatchEvent(new Event('orderListShouldReload'));
+                  if (typeof window !== "undefined") {
+                    window.dispatchEvent(new Event("orderListShouldReload"));
                   }
                   closeModal();
                 }}
@@ -142,12 +183,24 @@ export default function CarList() {
             <div className="p-4">
               <h3 className="text-xl font-bold mb-2 text-black">Car Details</h3>
               <ul className="text-black">
-                <li><strong>Plate:</strong> {selectedCar.plate}</li>
-                <li><strong>Model:</strong> {selectedCar.model}</li>
-                <li><strong>Year:</strong> {selectedCar.year}</li>
-                <li><strong>Owner:</strong> {selectedCar.owner}</li>
-                <li><strong>Status:</strong> {selectedCar.status}</li>
-                <li><strong>KM:</strong> {selectedCar.km}</li>
+                <li>
+                  <strong>Plate:</strong> {selectedCar.plate}
+                </li>
+                <li>
+                  <strong>Model:</strong> {selectedCar.model}
+                </li>
+                <li>
+                  <strong>Year:</strong> {selectedCar.year}
+                </li>
+                <li>
+                  <strong>Owner:</strong> {selectedCar.owner}
+                </li>
+                <li>
+                  <strong>Status:</strong> {selectedCar.status}
+                </li>
+                <li>
+                  <strong>KM:</strong> {selectedCar.km}
+                </li>
               </ul>
               <button
                 className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
