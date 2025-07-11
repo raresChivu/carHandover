@@ -17,21 +17,23 @@ const Modal: React.FC<ModalProps> = ({
 }) => {
   if (!isOpen) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-lg mx-4 p-6 relative animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto relative animate-fade-in">
         {showCloseButton && (
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl font-bold focus:outline-none"
+            className="sticky top-0 right-0 float-right text-gray-500 hover:text-gray-800 text-2xl font-bold focus:outline-none z-10 bg-white rounded p-1"
             aria-label="Close modal"
           >
             &times;
           </button>
         )}
         {title && (
-          <h2 className="text-xl font-semibold mb-4 text-center text-black">{title}</h2>
+          <h2 className="text-xl font-semibold mb-4 text-center text-black clear-both">
+            {title}
+          </h2>
         )}
-        <div>{children}</div>
+        <div className="p-6">{children}</div>
       </div>
     </div>
   );

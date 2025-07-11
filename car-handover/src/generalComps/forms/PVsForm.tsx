@@ -182,8 +182,8 @@ export function PVSForm({
               const usersRaw = localStorage.getItem("registeredUsers");
               const currentUserRaw = localStorage.getItem("currentUser");
               if (usersRaw && currentUserRaw) {
-                let users = [];
-                let currentUser = null;
+                let users: any[] = [];
+                let currentUser: any = null;
                 try {
                   users = JSON.parse(usersRaw);
                 } catch {

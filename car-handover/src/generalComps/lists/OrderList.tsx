@@ -23,7 +23,7 @@ export default function OrderList() {
 
   // Expose a reload function for parent to call
   const reloadOrders = () => {
-    let currentUser = null;
+    let currentUser: any = null;
     if (typeof window !== "undefined") {
       const userStr = localStorage.getItem("currentUser");
       if (userStr) {

@@ -12,9 +12,9 @@ function NotificationsList() {
 
   useEffect(() => {
     // Get current user
-    let currentUser = null;
-    if (typeof window !== 'undefined') {
-      const userStr = localStorage.getItem('currentUser');
+    let currentUser: any = null;
+    if (typeof window !== "undefined") {
+      const userStr = localStorage.getItem("currentUser");
       if (userStr) {
         try {
           currentUser = JSON.parse(userStr);
@@ -23,7 +23,7 @@ function NotificationsList() {
     }
     if (currentUser) {
       // Get all users and find notifications for current user
-      const usersRaw = localStorage.getItem('registeredUsers');
+      const usersRaw = localStorage.getItem("registeredUsers");
       if (usersRaw) {
         try {
           const users = JSON.parse(usersRaw);
@@ -35,7 +35,9 @@ function NotificationsList() {
   }, []);
 
   if (!notifications.length) {
-    return <div className="text-center text-gray-500 mt-8">No notifications.</div>;
+    return (
+      <div className="text-center text-gray-500 mt-8">No notifications.</div>
+    );
   }
 
   const handleComplete = (notif: any) => {
@@ -50,9 +52,9 @@ function NotificationsList() {
 
   const handleSignatureSave = () => {
     // Mark notification as read (completed)
-    if (typeof window !== 'undefined' && activeNotif) {
-      const usersRaw = localStorage.getItem('registeredUsers');
-      const currentUserStr = localStorage.getItem('currentUser');
+    if (typeof window !== "undefined" && activeNotif) {
+      const usersRaw = localStorage.getItem("registeredUsers");
+      const currentUserStr = localStorage.getItem("currentUser");
       if (usersRaw && currentUserStr) {
         try {
           const users = JSON.parse(usersRaw);
@@ -62,13 +64,13 @@ function NotificationsList() {
               return {
                 ...u,
                 notifications: u.notifications.map((n: any) =>
-                  n.id === activeNotif.id ? { ...n, read: true } : n
+                  n.id === activeNotif.id ? { ...n, read: true } : n,
                 ),
               };
             }
             return u;
           });
-          localStorage.setItem('registeredUsers', JSON.stringify(updatedUsers));
+          localStorage.setItem("registeredUsers", JSON.stringify(updatedUsers));
         } catch {}
       }
     }
@@ -80,32 +82,59 @@ function NotificationsList() {
 
   return (
     <div className="space-y-4 mt-4">
-      {notifications.slice().reverse().map((notif) => (
-        <div key={notif.id}>
-          <NotificationElement notification={notif} />
-          {!notif.read && (
-            <button
-              className="mt-2 px-4 py-1 bg-green-600 text-white rounded hover:bg-green-700"
-              onClick={() => handleComplete(notif)}
-            >
-              Complete
-            </button>
-          )}
-        </div>
-      ))}
+      {notifications
+        .slice()
+        .reverse()
+        .map((notif) => (
+          <div key={notif.id}>
+            <NotificationElement notification={notif} />
+            {!notif.read && (
+              <button
+                className="mt-2 px-4 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+                onClick={() => handleComplete(notif)}
+              >
+                Complete
+              </button>
+            )}
+          </div>
+        ))}
 
       {/* Modal for review and signature */}
       {activeNotif && showReview && (
-        <Modal isOpen={showReview} onClose={() => { setShowReview(false); setActiveNotif(null); }} title="Review Request/Assignment">
+        <Modal
+          isOpen={showReview}
+          onClose={() => {
+            setShowReview(false);
+            setActiveNotif(null);
+          }}
+          title="Review Request/Assignment"
+        >
           <div className="p-4">
-            <h3 className="text-lg font-bold mb-2 text-black">Review Details</h3>
+            <h3 className="text-lg font-bold mb-2 text-black">
+              Review Details
+            </h3>
             <ul className="text-black mb-4">
-              <li><strong>Type:</strong> {activeNotif.type === 'assign' ? 'Assignment' : 'Request'}</li>
-              <li><strong>Car:</strong> {activeNotif.carPlate || activeNotif.carId}</li>
-              <li><strong>From:</strong> {activeNotif.from}</li>
-              <li><strong>To:</strong> {activeNotif.to}</li>
-              <li><strong>Date:</strong> {new Date(activeNotif.date).toLocaleString()}</li>
-              <li><strong>Message:</strong> {activeNotif.message}</li>
+              <li>
+                <strong>Type:</strong>{" "}
+                {activeNotif.type === "assign" ? "Assignment" : "Request"}
+              </li>
+              <li>
+                <strong>Car:</strong>{" "}
+                {activeNotif.carPlate || activeNotif.carId}
+              </li>
+              <li>
+                <strong>From:</strong> {activeNotif.from}
+              </li>
+              <li>
+                <strong>To:</strong> {activeNotif.to}
+              </li>
+              <li>
+                <strong>Date:</strong>{" "}
+                {new Date(activeNotif.date).toLocaleString()}
+              </li>
+              <li>
+                <strong>Message:</strong> {activeNotif.message}
+              </li>
             </ul>
             <button
               className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
@@ -117,7 +146,14 @@ function NotificationsList() {
         </Modal>
       )}
       {activeNotif && showSignature && (
-        <Modal isOpen={showSignature} onClose={() => { setShowSignature(false); setActiveNotif(null); }} title="Complete with Signature">
+        <Modal
+          isOpen={showSignature}
+          onClose={() => {
+            setShowSignature(false);
+            setActiveNotif(null);
+          }}
+          title="Complete with Signature"
+        >
           <div className="p-4">
             <Signature onSave={handleSignatureSave} />
           </div>
@@ -128,5 +164,3 @@ function NotificationsList() {
 }
 
 export default NotificationsList;
-
-
