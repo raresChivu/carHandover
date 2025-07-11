@@ -287,7 +287,7 @@ export function PVSForm({
         e.preventDefault();
         setShowSignature(true);
       }}
-      className="text-black space-y-4 bg-white p-6 rounded-lg shadow max-w-lg mx-auto"
+      className="text-black space-y-4 w-full"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
@@ -297,7 +297,7 @@ export function PVSForm({
             value={carId ?? ""}
             onChange={(e) => setCarId(Number(e.target.value))}
             required
-            className="text-black w-full border border-gray-300 rounded px-3 py-2"
+            className="text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div>
@@ -307,7 +307,7 @@ export function PVSForm({
             value={date}
             onChange={(e) => setDate(e.target.value)}
             required
-            className="text-black w-full border border-gray-300 rounded px-3 py-2"
+            className="text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div>
@@ -317,7 +317,7 @@ export function PVSForm({
             value={km}
             onChange={(e) => setKm(Number(e.target.value))}
             required
-            className="text-black w-full border border-gray-300 rounded px-3 py-2"
+            className="text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div>
@@ -329,7 +329,7 @@ export function PVSForm({
             value={fuelLevel}
             onChange={(e) => setFuelLevel(Number(e.target.value))}
             required
-            className="text-black w-full border border-gray-300 rounded px-3 py-2"
+            className="text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
       </div>
@@ -341,7 +341,7 @@ export function PVSForm({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
-          className="text-black w-full border border-gray-300 rounded px-3 py-2"
+          className="text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
       <div>
@@ -352,7 +352,7 @@ export function PVSForm({
           value={condition}
           onChange={(e) => setCondition(e.target.value)}
           required
-          className="text-black w-full border border-gray-300 rounded px-3 py-2"
+          className="text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -365,7 +365,7 @@ export function PVSForm({
             value={donorEmail}
             onChange={(e) => setDonorEmail(e.target.value)}
             required
-            className="text-black w-full border border-gray-300 rounded px-3 py-2"
+            className="text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div>
@@ -377,7 +377,7 @@ export function PVSForm({
             value={recipientEmail}
             onChange={(e) => setRecipientEmail(e.target.value)}
             required
-            className="text-black w-full border border-gray-300 rounded px-3 py-2"
+            className="text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
       </div>
@@ -391,7 +391,7 @@ export function PVSForm({
             onChange={(e) =>
               setSignatureType(e.target.value as "donor" | "recipient")
             }
-            className="text-black w-full border border-gray-300 rounded px-3 py-2"
+            className="text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="donor">Donor</option>
             <option value="recipient">Recipient</option>
@@ -406,15 +406,15 @@ export function PVSForm({
             value={signature}
             onChange={(e) => setSignature(e.target.value)}
             required
-            className="text-black w-full border border-gray-300 rounded px-3 py-2"
+            className="text-black w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
       </div>
       <button
         type="submit"
-        className="mt-6 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
       >
-        Continue
+        Continue to Signature
       </button>
     </form>
   );

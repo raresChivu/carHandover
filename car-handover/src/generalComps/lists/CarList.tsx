@@ -237,47 +237,104 @@ export default function CarList() {
         <Modal isOpen={isModalOpen} onClose={closeModal}>
           {/* Admin: show details and assign, Employee: show preview first, then request */}
           {!isAdmin && !isRequestModal && !hasPreviewed ? (
-            <div className="p-4">
-              <h3 className="text-xl font-bold mb-2 text-black">Car Details</h3>
-              <ul className="text-black">
-                <li>
-                  <strong>Plate:</strong> {selectedCar.plate}
-                </li>
-                <li>
-                  <strong>Model:</strong> {selectedCar.model}
-                </li>
-                <li>
-                  <strong>Year:</strong> {selectedCar.year}
-                </li>
-                <li>
-                  <strong>Owner:</strong> {selectedCar.owner}
-                </li>
-                <li>
-                  <strong>Status:</strong> {selectedCar.status}
-                </li>
-                <li>
-                  <strong>KM:</strong> {selectedCar.km}
-                </li>
-              </ul>
-              <button
-                className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                onClick={() => {
-                  setIsRequestModal(true);
-                  setHasPreviewed(true);
-                }}
-              >
-                Request this Car
-              </button>
-              <button
-                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                onClick={closeModal}
-              >
-                Close
-              </button>
+            <div className="space-y-6">
+              <h3 className="text-2xl font-bold text-center text-black">
+                Car Details
+              </h3>
+
+              {/* Car Information Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h4 className="font-semibold text-gray-700 mb-2">
+                    Basic Information
+                  </h4>
+                  <div className="space-y-2 text-black">
+                    <div className="flex justify-between">
+                      <span className="font-medium">Plate:</span>
+                      <span>{selectedCar.plate}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Model:</span>
+                      <span>{selectedCar.model}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Year:</span>
+                      <span>{selectedCar.year}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h4 className="font-semibold text-gray-700 mb-2">
+                    Availability
+                  </h4>
+                  <div className="space-y-2 text-black">
+                    <div className="flex justify-between">
+                      <span className="font-medium">Status:</span>
+                      <span
+                        className={`px-2 py-1 rounded text-xs font-medium ${
+                          selectedCar.status === "available"
+                            ? "bg-green-100 text-green-800"
+                            : selectedCar.status === "assigned"
+                              ? "bg-blue-100 text-blue-800"
+                              : selectedCar.status === "maintenance"
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {selectedCar.status}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Owner:</span>
+                      <span>{selectedCar.owner}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Mileage:</span>
+                      <span>{selectedCar.km} km</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  className="flex-1 bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-colors font-medium"
+                  onClick={() => {
+                    setIsRequestModal(true);
+                    setHasPreviewed(true);
+                  }}
+                >
+                  Request this Car
+                </button>
+                <button
+                  className="flex-1 bg-gray-600 text-white py-3 px-6 rounded-lg hover:bg-gray-700 transition-colors font-medium"
+                  onClick={closeModal}
+                >
+                  Close
+                </button>
+              </div>
             </div>
           ) : isRequestModal && currentUser ? (
-            <div className="p-4">
-              <h3 className="text-xl font-bold mb-2 text-black">Request Car</h3>
+            <div className="space-y-6">
+              <div className="text-center">
+                <h3 className="text-2xl font-bold text-black">Request Car</h3>
+                <p className="text-gray-600 mt-2">
+                  Fill out the form below to request {selectedCar.plate} -{" "}
+                  {selectedCar.model}
+                </p>
+              </div>
+
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-blue-800 font-medium">Car:</span>
+                  <span className="text-blue-900">
+                    {selectedCar.plate} - {selectedCar.model}
+                  </span>
+                </div>
+              </div>
+
               <PVSForm
                 initialValues={{
                   donorEmail: selectedCar.owner || "",
@@ -299,51 +356,95 @@ export default function CarList() {
                   closeModal();
                 }}
               />
-              <button
-                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                onClick={closeModal}
-              >
-                Close
-              </button>
+
+              <div className="border-t pt-4">
+                <button
+                  className="w-full bg-gray-600 text-white py-3 px-6 rounded-lg hover:bg-gray-700 transition-colors font-medium"
+                  onClick={closeModal}
+                >
+                  Cancel Request
+                </button>
+              </div>
             </div>
           ) : (
-            <div className="p-4">
-              <h3 className="text-xl font-bold mb-2 text-black">Car Details</h3>
-              <ul className="text-black">
-                <li>
-                  <strong>Plate:</strong> {selectedCar.plate}
-                </li>
-                <li>
-                  <strong>Model:</strong> {selectedCar.model}
-                </li>
-                <li>
-                  <strong>Year:</strong> {selectedCar.year}
-                </li>
-                <li>
-                  <strong>Owner:</strong> {selectedCar.owner}
-                </li>
-                <li>
-                  <strong>Status:</strong> {selectedCar.status}
-                </li>
-                <li>
-                  <strong>KM:</strong> {selectedCar.km}
-                </li>
-              </ul>
-              <button
-                className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                onClick={() => {
-                  closeModal();
-                  router.push("/screens/Employees");
-                }}
-              >
-                Go to Employees
-              </button>
-              <button
-                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                onClick={closeModal}
-              >
-                Close
-              </button>
+            <div className="space-y-6">
+              <h3 className="text-2xl font-bold text-center text-black">
+                Car Management
+              </h3>
+
+              {/* Car Information Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h4 className="font-semibold text-gray-700 mb-2">
+                    Basic Information
+                  </h4>
+                  <div className="space-y-2 text-black">
+                    <div className="flex justify-between">
+                      <span className="font-medium">Plate:</span>
+                      <span>{selectedCar.plate}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Model:</span>
+                      <span>{selectedCar.model}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Year:</span>
+                      <span>{selectedCar.year}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h4 className="font-semibold text-gray-700 mb-2">
+                    Status & Assignment
+                  </h4>
+                  <div className="space-y-2 text-black">
+                    <div className="flex justify-between">
+                      <span className="font-medium">Status:</span>
+                      <span
+                        className={`px-2 py-1 rounded text-xs font-medium ${
+                          selectedCar.status === "available"
+                            ? "bg-green-100 text-green-800"
+                            : selectedCar.status === "assigned"
+                              ? "bg-blue-100 text-blue-800"
+                              : selectedCar.status === "maintenance"
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {selectedCar.status}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Owner:</span>
+                      <span>{selectedCar.owner}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Mileage:</span>
+                      <span>{selectedCar.km} km</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Admin Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                  onClick={() => {
+                    closeModal();
+                    router.push("/screens/Employees");
+                  }}
+                >
+                  Manage Employees
+                </button>
+                <button
+                  className="flex-1 bg-gray-600 text-white py-3 px-6 rounded-lg hover:bg-gray-700 transition-colors font-medium"
+                  onClick={closeModal}
+                >
+                  Close
+                </button>
+              </div>
             </div>
           )}
         </Modal>

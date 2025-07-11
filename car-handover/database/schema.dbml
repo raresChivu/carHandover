@@ -1,0 +1,170 @@
+// Car Handover Application Database Schema
+// Complete schema with all necessary relationships for future backend implementation
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table users {
+  id integer [primary key]
+  username varchar [unique, note: "Unique username for login"]
+  firstName varchar [not null]
+  lastName varchar [not null]
+  email varchar [unique, not null, note: "Primary identifier and login email"]
+  password varchar [not null, note: "Hashed password for security"]
+  isAdmin boolean [default: false, note: "Role flag: true for admin, false for employee"]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  
+  Note: 'Unified user table supporting both employees and admins through role flag'
+}
+
+Table cars {
+  id integer [primary key]
+  plate varchar [unique, not null, note: "License plate number - unique identifier"]
+  model varchar [not null, note: "Car model (e.g., Toyota Camry)"]
+  year integer [not null, note: "Manufacturing year"]
+  color varchar [note: "Car color"]
+  fuelType varchar [note: "Gasoline, Diesel, Electric, Hybrid, LPG"]
+  transmission varchar [note: "Manual, Automatic, CVT"]
+  mileage integer [note: "Current mileage in kilometers"]
+  status varchar [default: "available", note: "available, assigned, maintenance, out-of-service"]
+  assignedToUserId integer [note: "Currently assigned user - FK to users table"]
+  notes text [note: "Additional notes about the car"]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  
+  Note: 'Core car entity with comprehensive details and assignment tracking'
+}
+
+Table process_verbals {
+  id integer [primary key]
+  carId integer [not null, note: "Car involved in the handover"]
+  donorUserId integer [note: "User giving/returning the car"]
+  recipientUserId integer [note: "User receiving the car"]
+  date date [not null, note: "Date of handover"]
+  km integer [note: "Mileage at time of handover"]
+  fuelLevel integer [note: "Fuel level percentage (0-100)"]
+  condition text [note: "Detailed car condition description"]
+  description text [note: "Handover description and notes"]
+  signature varchar [note: "Digital signature data"]
+  signatureType varchar [note: "donor or recipient - who signed"]
+  photos text [note: "JSON array of photo file paths/URLs"]
+  created_at timestamp [default: `now()`]
+  
+  Note: 'Process Verbal records - detailed handover documentation'
+}
+
+Table orders {
+  id integer [primary key]
+  carId integer [not null, note: "Requested car"]
+  requesterUserId integer [not null, note: "Employee requesting the car"]
+  ownerUserId integer [note: "Current car owner/assigned user (can be NULL for available cars)"]
+  approverUserId integer [note: "Admin who approved/rejected the request"]
+  status varchar [default: "pending", note: "pending, approved, rejected, completed"]
+  requestDate timestamp [default: `now()`, note: "When the request was made"]
+  approvalDate timestamp [note: "When the request was approved/rejected"]
+  completionDate timestamp [note: "When the handover was completed"]
+  notes text [note: "Additional notes about the request"]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  
+  Note: 'Car request orders with full lifecycle tracking'
+}
+
+Table notifications {
+  id integer [primary key]
+  recipientUserId integer [not null, note: "User who should receive the notification"]
+  senderUserId integer [note: "User who triggered the notification (can be NULL for system notifications)"]
+  carId integer [note: "Related car if applicable"]
+  orderId integer [note: "Related order if applicable"]
+  type varchar [not null, note: "request, assign, approval, rejection, handover, system"]
+  message text [not null, note: "Notification message content"]
+  isRead boolean [default: false, note: "Whether the notification has been read"]
+  created_at timestamp [default: `now()`]
+  
+  Note: 'Notification system for user communication and updates'
+}
+
+Table car_assignments {
+  id integer [primary key]
+  carId integer [not null, note: "Car being assigned"]
+  userId integer [not null, note: "User receiving the assignment"]
+  assignedBy integer [not null, note: "Admin who made the assignment"]
+  assignedAt timestamp [default: `now()`, note: "When the assignment was made"]
+  unassignedAt timestamp [note: "When the assignment ended (NULL if still assigned)"]
+  notes text [note: "Assignment notes and reasons"]
+  
+  Note: 'Historical record of all car assignments for audit trail'
+}
+
+Table user_sessions {
+  id integer [primary key]
+  userId integer [not null, note: "User this session belongs to"]
+  sessionToken varchar [unique, not null, note: "Secure session identifier"]
+  expiresAt timestamp [not null, note: "When the session expires"]
+  created_at timestamp [default: `now()`]
+  
+  Note: 'User session management for authentication'
+}
+
+// ================================
+// RELATIONSHIPS
+// ================================
+
+// Car Assignment Relationships
+Ref: cars.assignedToUserId > users.id [note: "Current car assignment"]
+
+// Process Verbal Relationships
+Ref: process_verbals.carId > cars.id [note: "Car involved in handover"]
+Ref: process_verbals.donorUserId > users.id [note: "User giving the car"]
+Ref: process_verbals.recipientUserId > users.id [note: "User receiving the car"]
+
+// Order Management Relationships
+Ref: orders.carId > cars.id [note: "Requested car"]
+Ref: orders.requesterUserId > users.id [note: "Employee making the request"]
+Ref: orders.ownerUserId > users.id [note: "Current car owner"]
+Ref: orders.approverUserId > users.id [note: "Admin processing the request"]
+
+// Notification Relationships
+Ref: notifications.recipientUserId > users.id [note: "Notification recipient"]
+Ref: notifications.senderUserId > users.id [note: "Notification sender"]
+Ref: notifications.carId > cars.id [note: "Related car"]
+Ref: notifications.orderId > orders.id [note: "Related order"]
+
+// Assignment History Relationships
+Ref: car_assignments.carId > cars.id [note: "Assigned car"]
+Ref: car_assignments.userId > users.id [note: "Assigned user"]
+Ref: car_assignments.assignedBy > users.id [note: "Admin who made assignment"]
+
+// Session Management Relationships
+Ref: user_sessions.userId > users.id [note: "Session owner"]
+
+// ================================
+// INDEXES FOR PERFORMANCE
+// ================================
+
+// Note: These would be implemented in the actual database
+// Index on cars.status for filtering available cars
+// Index on cars.assignedToUserId for finding user's cars  
+// Index on cars.plate for license plate searches
+// Index on orders.status for filtering pending requests
+// Index on orders.requesterUserId for user's requests
+// Index on notifications.recipientUserId for user notifications
+// Index on notifications.isRead for unread notifications
+// Index on process_verbals.carId for car handover history
+// Index on users.email for login lookups
+// Index on user_sessions.sessionToken for authentication
+// Index on user_sessions.expiresAt for session cleanup
+
+// ================================
+// BUSINESS RULES & CONSTRAINTS
+// ================================
+
+// Note: These would be implemented as database constraints or application logic
+// 1. A car can only be assigned to one user at a time
+// 2. Only admins can approve/reject orders
+// 3. Users can only request available cars
+// 4. Process verbals require both donor and recipient information
+// 5. Notifications must have either a car or order reference (or be system notifications)
+// 6. Car assignments history maintains complete audit trail
+// 7. Sessions automatically expire and require cleanup
+// 8. Users cannot request cars they already have assigned
