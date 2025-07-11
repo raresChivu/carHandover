@@ -29,5 +29,3 @@ describe("Authentication Forms", () => {
     expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
   });
 });
-
-// (No need to import or redefine expect; Vitest provides it globally)
